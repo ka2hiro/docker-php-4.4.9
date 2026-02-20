@@ -1,15 +1,19 @@
 FROM debian:10
 
+COPY sources.list /etc/apt/sources.list
+
 RUN apt update
 RUN apt install build-essential -y
 RUN apt install vim wget -y
 
 # sources
+# RUN wget http://archive.apache.org/dist/httpd/httpd-2.0.65.tar.gz -P /srv \
+# && wget http://museum.php.net/php4/php-4.4.9.tar.gz -P /srv
 RUN wget http://archive.apache.org/dist/httpd/httpd-2.0.65.tar.gz -P /srv \
-&& wget http://museum.php.net/php4/php-4.4.9.tar.gz -P /srv
+&& wget http://museum.php.net/php4/php-4.3.11.tar.gz -P /srv
 RUN cd /srv \
 && tar -xzf httpd-2.0.65.tar.gz \
-&& tar -xzf php-4.4.9.tar.gz
+&& tar -xzf php-4.3.11.tar.gz
 
 # httpd
 RUN cd /srv/httpd-2.0.65 \
@@ -20,8 +24,12 @@ RUN cd /srv/httpd-2.0.65 \
 # php
 # ./configure --help
 RUN apt install flex -y
-RUN cd /srv/php-4.4.9 \
-&& ./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql \
+RUN cd /srv/php-4.3.11 \
+&& ./configure --with-apxs2=/usr/local/apache2/bin/apxs \
+    --with-mysql \
+    --enable-mbstring \
+    --enable-mbregex \
+    --enable-zend-multibyte \
 && make \
 && make install \
 && cp php.ini-dist /usr/local/lib/php.ini

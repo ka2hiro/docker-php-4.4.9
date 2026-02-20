@@ -5,5 +5,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - .:/usr/local/apache2/htdocs
+      - ../test:/usr/local/apache2/htdocs
+      - ../:/src
+      - ./php.ini:/usr/local/lib/php.ini
     command: "/usr/local/apache2/bin/apachectl -D FOREGROUND"
